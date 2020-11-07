@@ -1,0 +1,49 @@
+<html>
+<head>
+<script>
+var iFrameDoc = null;
+function startBot() {
+    var iFrame = document.getElementById("myframe");
+    iFrameDoc = (iFrame.contentWindow || iFrame.contentDocument);
+    if (iFrameDoc.document) {
+      iFrameDoc = iFrameDoc.document
+    };
+    var botMessage = compostBotMessage();
+    if (botMessage != null) {
+        iFrameDoc.getElementById("msgField").value = botMessage;
+        iFrameDoc.getElementById("msgForm").querySelector('input[type="submit"]').click();
+    }
+    setTimeout(() => {  startBot(); }, 500);
+}
+function getMessages() {
+    return iFrameDoc.getElementById("messages");
+}
+function getLastMessage() {
+    return getMessages().querySelector('div[class="message"]');
+}
+var latestMessageUsers = [""];
+function compostBotMessage() {
+    try {
+        var botName = document.getElementById("botName").value;
+        var latestMessage = getLastMessage();
+        var latestMessageUser = latestMessage.querySelector('a').querySelector('b').innerHTML;
+        if (latestMessageUser != botName && !latestMessageUsers.includes(latestMessageUser)) {
+            latestMessageUsers.push(latestMessageUser);
+            return "Hello " + latestMessageUser + "!";
+        }
+    } catch(err) {
+        // swallow
+    }
+    return null;
+}
+</script>
+</head>
+<body>
+<iframe frameborder="0" scrolling="no" width="530" height="298" src="/EACjeyZzgDk4Ng19RcshmZ1PZlMLuCrJ13zXMjHFxcBd5Q/#main" name="myframe" id="myframe"></iframe>
+<br/>
+<br/>
+Type in the bot user name that you are logged into with above:
+<input type="text" placeholder="Bot Name" id="botName" autofocus="" autocomplete="off">
+<a href="#" onclick="startBot()">Start Bot</a>
+</body>
+</html>
